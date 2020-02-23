@@ -29,20 +29,42 @@ const crawler = async () => {
     text = $(".story_area .con_tx").text();
     summary.push(text);
   }
-  //console.log(summary);
+  // console.log(summary);
 }
 crawler();
 
 /********** puppeteer **********/
 const puppeteer = require('puppeteer');
+const stringify = require('csv-stringify/lib/sync');
+const add_to_sheet = require('./add_to_sheet');
 const crawler2 = async () => {
+  let summary = [], el, text, cell;
   const browser = await puppeteer.launch({headless: false});
   const page = await browser.newPage();
-  await page.goto(rs2[0].link);
-  await page.waitFor(2000);
-  await page.goto(rs2[1].link);
-  await page.waitFor(3000);
+  await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36");
+  /* const map = new Map();
+  map.add();
+  map.get();
+  map.has() */
+  for(let [k, v] of rs2.entries()) {
+    let rand = Math.random()*1000 + 1000;
+    await page.goto(v.link);
+    el = await page.$(".story_area .con_tx");
+    if(el) {
+      text = await page.evaluate(tag => tag.textContent, el);
+      //CSV - summary.push([v.num, v.title, v.link, text]);
+      cell = 'D' + (k + 2);
+      add_to_sheet()
+    }
+    await page.waitFor(rand);
+  }
+  console.log(summary);
   await page.close();
   await browser.close();
+  /*
+  // CSV
+  const str = stringify(summary);
+  fs.writeFileSync('./excel/result.csv', str);
+  */
 };
 crawler2();
