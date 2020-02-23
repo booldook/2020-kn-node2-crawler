@@ -54,7 +54,7 @@ const crawler2 = async () => {
       text = await page.evaluate(tag => tag.textContent, el);
       //CSV - summary.push([v.num, v.title, v.link, text]);
       cell = 'D' + (k + 2);
-      add_to_sheet()
+      add_to_sheet(movie, cell, 's', text.trim());
     }
     await page.waitFor(rand);
   }
@@ -66,5 +66,6 @@ const crawler2 = async () => {
   const str = stringify(summary);
   fs.writeFileSync('./excel/result.csv', str);
   */
+  xlsx.writeFile(file_xlsx, './excel/result.xlsx');
 };
 crawler2();
